@@ -17,7 +17,7 @@
 | **GTID** | 트랜잭션마다 고유 ID 부여 → 복제 위치 자동 추적, Replica 재시작 시 빠진 트랜잭션 자동 보충 |
 | **Semi-Sync (세미 싱크)** | Source 커밋 후 Replica ACK 확인 → 데이터 유실 방지, 타임아웃 시 비동기로 자동 전환 |
 | **RBR (Row Based Replication)** | SQL이 아닌 변경된 행 값 그대로 복제 → `NOW()`, `UUID()` 포함 쿼리도 정확하게 복제 |
-| **@Transactional(readOnly=true)** | Spring 레벨에서 읽기/쓰기 분리 → readOnly면 Replica, 아니면 Source로 자동 라우팅 |
+| **@Transactional(readOnly=true)** | Spring 레벨에서 읽기/쓰기 분리 → readOnly면 Replica,<br> 아니면 Source로 자동 라우팅 |
 
 ---
 
@@ -267,10 +267,10 @@ public DataSource dataSource(@Qualifier("routingDataSource") DataSource routing)
 }
 ```
 
-Spring은 트랜잭션 시작 시 **즉시** 커넥션을 가져오려 한다.
-이 시점에는 아직 `readOnly` 여부가 결정되기 전이라 항상 Source로 가게 된다.
-`LazyConnectionDataSourceProxy`로 감싸면 **실제 쿼리 직전**에 커넥션을 획득하므로
-`RoutingDataSource`가 `readOnly` 값을 올바르게 읽어 Replica로 분기할 수 있다.
+Spring은 트랜잭션 시작 시 **즉시** 커넥션을 가져오려 한다. <br/>
+이 시점에는 아직 `readOnly` 여부가 결정되기 전이라 항상 Source로 가게 된다.<br/>
+`LazyConnectionDataSourceProxy`로 감싸면 **실제 쿼리 직전**에 커넥션을 획득하므로<br/>
+`RoutingDataSource`가 `readOnly` 값을 올바르게 읽어 Replica로 분기할 수 있다.<br/>
 
 ### RBR이 필요한 이유
 
